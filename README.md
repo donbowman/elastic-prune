@@ -9,3 +9,9 @@ of disk space).
 ```
 elastic-prune -e elastic-url [-d days]
 ```
+
+You may wish to install the Kubernetes CronJob:
+
+```
+kubectl -n logging apply -f cron.yaml
+```

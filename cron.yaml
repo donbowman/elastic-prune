@@ -1,0 +1,20 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: elastic-prune
+spec:
+  schedule: "10 18 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+            - name: regcred
+          containers:
+            - name: elastic-prune
+              image: cr.agilicus.com/utilities/elastic-prune
+              args:
+                - -e
+                - http://elasticsearch.logging.svc.cluster.local:9200
+          restartPolicy: OnFailure
