@@ -1,0 +1,33 @@
+---
+image: cr.agilicus.com/corp-tools/docker-compose
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+
+services:
+  - name: docker:dind
+
+stages:
+  - build
+
+# the 'ping' is to see if 'docker' resolves. If it does,
+# we are running locally for CI, if not, we are running
+# in kubernetes and want 'localhost' for the link
+before_script:
+  - echo "Before Script"
+  - ping -c1 -4 docker > /dev/null 2>&1 && DOCKER_HOST=tcp://docker:2375
+  - echo DOCKER_HOST=$DOCKER_HOST
+  - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY;
+
+build:
+  stage: build
+  script: |
+    docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA .
+    docker push $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+    if [ "$CI_COMMIT_REF_NAME" = "master" ];
+    then
+      echo Tag $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA to $CI_REGISTRY/$CI_PROJECT_PATH:latest
+      docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA $CI_REGISTRY/$CI_PROJECT_PATH:latest
+      docker push $CI_REGISTRY/$CI_PROJECT_PATH:latest
+    fi
