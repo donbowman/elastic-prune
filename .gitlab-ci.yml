@@ -23,11 +23,11 @@ before_script:
 build:
   stage: build
   script: |
-    docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA .
-    docker push $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+    docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME .
+    docker push $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME
     if [ "$CI_COMMIT_REF_NAME" = "master" ];
     then
-      echo Tag $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA to $CI_REGISTRY/$CI_PROJECT_PATH:latest
-      docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA $CI_REGISTRY/$CI_PROJECT_PATH:latest
+      echo Tag $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME to $CI_REGISTRY/$CI_PROJECT_PATH:latest
+      docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME $CI_REGISTRY/$CI_PROJECT_PATH:latest
       docker push $CI_REGISTRY/$CI_PROJECT_PATH:latest
     fi
