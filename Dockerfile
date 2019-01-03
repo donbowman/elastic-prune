@@ -4,7 +4,7 @@ LABEL maintainer="don@agilicus.com"
 COPY . /elastic-prune
 WORKDIR /elastic-prune
 
-RUN pip install --target=./ -r requirements.txt
+RUN rm -rf .git && pip install --target=./ -r requirements.txt
 
 FROM gcr.io/distroless/python3
 COPY --from=build /elastic-prune /elastic-prune

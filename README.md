@@ -21,3 +21,8 @@ instead of the internal cr.agilicus.com on, in which case you might
 remove the imagePullSecrets: line in the cron.
 
 Public image is donbowman/elastic-prune
+
+If you want to run this right away, you can run from the template:
+```
+kubectl -n logging create job --from=cronjob/elastic-prune now
+```
